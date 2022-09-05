@@ -1,6 +1,3 @@
-from dotenv import load_dotenv
-load_dotenv()
-
 from twilio.rest import Client
 
 twilio_client = Client()

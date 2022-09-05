@@ -1,12 +1,10 @@
-from dotenv import load_dotenv
-load_dotenv()
-
 from fastapi import FastAPI, Request
 from modules.sms import send_bulk_sms
 from twilio.twiml.voice_response import VoiceResponse, Gather
 from twilio.rest import Client
 import wikipedia
 from modules.texts import ES_FEEDBACK, ES_NOT_FOUND, ES_THANKS, ES_WELCOME, INITIAL_ROUTE, GATHER_ROUTE, get_sms_result
+import uvicorn
 
 app = FastAPI()
 twilio_client = Client()
@@ -48,3 +46,8 @@ def gather(request: Request):
     resp.say(res[:1000])
     resp.say(ES_THANKS)
     return str(resp)
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=os.getenv(
+        "PORT", default=5000), log_level="info")

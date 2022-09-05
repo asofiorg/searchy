@@ -1,0 +1,5 @@
+fastapi
+twilio
+python-dotenv
+wikipedia
+uvicorn
