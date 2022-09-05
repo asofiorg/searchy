@@ -5,6 +5,7 @@ from twilio.rest import Client
 import wikipedia
 from modules.texts import ES_FEEDBACK, ES_NOT_FOUND, ES_THANKS, ES_WELCOME, INITIAL_ROUTE, GATHER_ROUTE, get_sms_result
 import uvicorn
+import os
 
 app = FastAPI()
 twilio_client = Client()
