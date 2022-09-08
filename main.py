@@ -5,6 +5,7 @@ import wikipedia
 from twilio.rest import Client
 from twilio.twiml.voice_response import VoiceResponse, Gather
 from modules.sms import send_bulk_sms
+from modules.db import db, start_call, add_log
 from fastapi import FastAPI, Form, Response
 from dotenv import load_dotenv
 load_dotenv()
@@ -14,8 +15,21 @@ app = FastAPI()
 twilio_client = Client()
 
 
+@app.on_event("startup")
+async def startup():
+    await db.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await db.disconnect()
+
+
 @app.api_route(INITIAL_ROUTE, methods=['GET', 'POST'])
-def voice():
+async def voice(From: str = Form(...), CallSid: str = Form(...)):
+    await start_call(CallSid, From)
+    await add_log(CallSid, "Searchy", ES_WELCOME)
+
     resp = VoiceResponse()
 
     gather = Gather(input="speech", language="es-US",
@@ -29,7 +43,9 @@ def voice():
 
 
 @app.api_route(GATHER_ROUTE, methods=['GET', 'POST'])
-def gather(From: str = Form(...), SpeechResult: str = Form(...)):
+async def gather(From: str = Form(...), SpeechResult: str = Form(...), CallSid: str = Form(...)):
+    await add_log(CallSid, From, SpeechResult)
+    
     resp = VoiceResponse()
 
     wikipedia.set_lang("es")
@@ -38,7 +54,7 @@ def gather(From: str = Form(...), SpeechResult: str = Form(...)):
         res = wikipedia.summary(SpeechResult)
     except:
         resp.say(ES_NOT_FOUND)
-        resp.redirect(INITIAL_ROUTE)
+        await add_log(CallSid, "Searchy", ES_NOT_FOUND)
 
         return Response(content=str(resp), media_type="application/xml")
 
@@ -47,6 +63,10 @@ def gather(From: str = Form(...), SpeechResult: str = Form(...)):
 
     resp.say(res[:1000])
     resp.say(ES_THANKS)
+    
+    await add_log(CallSid, "Searchy", res[:1000])
+    await add_log(CallSid, "Searchy", ES_THANKS)
+    
     return Response(content=str(resp), media_type="application/xml")
 
 
