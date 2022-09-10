@@ -1,1 +1,1 @@
-web: python main.py
+web: prisma generate && python main.py
