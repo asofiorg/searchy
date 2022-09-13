@@ -1,1 +1,1 @@
-web: prisma generate && python main.py
+web: sh start.sh

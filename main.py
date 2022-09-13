@@ -15,20 +15,10 @@ app = FastAPI()
 twilio_client = Client()
 
 
-@app.on_event("startup")
-async def startup():
-    await db.connect()
-
-
-@app.on_event("shutdown")
-async def shutdown():
-    await db.disconnect()
-
-
 @app.api_route(INITIAL_ROUTE, methods=['GET', 'POST'])
-async def voice(From: str = Form(...), CallSid: str = Form(...)):
-    await start_call(CallSid, From)
-    await add_log(CallSid, "Searchy", ES_WELCOME)
+def voice(From: str = Form(...), CallSid: str = Form(...)):
+    start_call(CallSid, From)
+    add_log(CallSid, "Searchy", ES_WELCOME)
 
     resp = VoiceResponse()
 
@@ -43,8 +33,8 @@ async def voice(From: str = Form(...), CallSid: str = Form(...)):
 
 
 @app.api_route(GATHER_ROUTE, methods=['GET', 'POST'])
-async def gather(From: str = Form(...), SpeechResult: str = Form(...), CallSid: str = Form(...)):
-    await add_log(CallSid, From, SpeechResult)
+def gather(From: str = Form(...), SpeechResult: str = Form(...), CallSid: str = Form(...)):
+    add_log(CallSid, From, SpeechResult)
     
     resp = VoiceResponse()
 
@@ -54,7 +44,7 @@ async def gather(From: str = Form(...), SpeechResult: str = Form(...), CallSid: 
         res = wikipedia.summary(SpeechResult)
     except:
         resp.say(ES_NOT_FOUND)
-        await add_log(CallSid, "Searchy", ES_NOT_FOUND)
+        add_log(CallSid, "Searchy", ES_NOT_FOUND)
 
         return Response(content=str(resp), media_type="application/xml")
 
@@ -64,8 +54,8 @@ async def gather(From: str = Form(...), SpeechResult: str = Form(...), CallSid: 
     resp.say(res[:1000])
     resp.say(ES_THANKS)
     
-    await add_log(CallSid, "Searchy", res[:1000])
-    await add_log(CallSid, "Searchy", ES_THANKS)
+    add_log(CallSid, "Searchy", res[:1000])
+    add_log(CallSid, "Searchy", ES_THANKS)
     
     return Response(content=str(resp), media_type="application/xml")
 

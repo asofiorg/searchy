@@ -1,31 +1,30 @@
-from prisma import Prisma
-from prisma.models import Call
+from deta import Deta
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-db = Prisma()
+
+key = os.getenv("DATABASE_KEY")
+db = Deta(key).Base("logs")
 
 
-async def start_call(call_sid, incoming_number):
-    call = await db.call.create(
-        data={
-            "sid": call_sid,
-            "incoming": incoming_number
-        })
+def start_call(call_sid, incoming_number):
+    call = db.put({
+        "incoming": incoming_number,
+        "logs": []
+    }, call_sid)
 
     return call
 
 
-async def add_log(call_sid, sender, message):
-    log = await db.log.create(
-        data={
-            "sender": sender,
-            "message": message,
-            call: {
-                connectOrCreate: {
-                    where: {
-                        sid: call_sid
-                    }
-                }
-            }
-        })
+def add_log(call_sid, sender, message):
+    call = db.get(call_sid)
+
+    call["logs"].append({
+        "sender": sender,
+        "message": message
+    })
+
+    log = db.put(call, call_sid)
 
     return log
