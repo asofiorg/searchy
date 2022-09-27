@@ -1,7 +1,10 @@
 INITIAL_ROUTE = "/voice"
-GATHER_ROUTE = "/gather"
+START_ROUTE = "/start"
+TRANSLATE_ROUTE="/translate"
 
-ES_WELCOME = "Hola bienvenido a la prueba alfa de serchi, di el nombre del concepto que quieres buscar"
+ES_WELCOME = "Hola soy serchi, ¿que quieres que haga?"
+
+ES_NEXT_STEP_TRANSLATE="dime que quieres traducir"
 
 ES_NOT_FOUND = "Lo siento, no hemos podido encontrar una respuesta a eso, intentalo de nuevo"
 
@@ -9,7 +12,11 @@ ES_FEEDBACK = "Gracias por usar searhcy ;), Si quieres mandar feedback envia un 
 
 ES_THANKS = "Gracias por usar serchi!, Te enviare un SMS con los datos de tu consulta para que puedas revisarlos mas tarde"
 
-def get_sms_result(locale: str, text: str) -> str:
-    LOCALE = "Tu resultado de Searchy:" if locale == "es" else "Your Searchy result:"
+ES_NEWS_HEADLINE = "Las 5 noticias mas importantes de hoy"
 
-    return f"{LOCALE} {text[:250]}..."
+ES_TRANSLATE = "Menciona el texto que quieres traducir"
+
+ES_TRANSLATE_RESULT = "La traducción es"
+
+def get_sms_result(text):
+    return f"Tu resultado de Searchy: {text[:1000]}..."
