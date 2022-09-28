@@ -1,4 +1,10 @@
-![Searchy](https://i.ibb.co/BPTPGhH/Searchy.png)
+<div align="center">
+
+# Searchy
+
+**_Like siri but in a phone call_**
+
+</div>
 
 # Corre la app
 
