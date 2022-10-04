@@ -5,9 +5,10 @@ from twilio.rest import Client
 from twilio.twiml.voice_response import VoiceResponse, Gather
 from modules.sms import send_bulk_sms, send_sms
 from modules.db import db, start_call, add_log
-from fastapi import FastAPI, Form, Response
+from fastapi import FastAPI, Form, Response, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 from modules.wiki import search_wiki
 from modules.classifier import classify
 from modules.translate import translate
@@ -24,6 +25,11 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 
+@app.get("/", response_class=HTMLResponse)
+async def render_website(request: Request):
+    return templates.TemplateResponse("landing.html", {"request": request, "phone_number": "018005190663"})
+
+
 @app.api_route(INITIAL_ROUTE, methods=['GET', 'POST'])
 def voice(From: str = Form(...), CallSid: str = Form(...)):
     start_call(CallSid, From)
@@ -32,7 +38,7 @@ def voice(From: str = Form(...), CallSid: str = Form(...)):
     resp = VoiceResponse()
 
     gather = Gather(input="speech", language="es-US",
-                    speech_timeout=5, action=START_ROUTE)
+                    finish_on_key="#", action=START_ROUTE)
     gather.say(ES_WELCOME)
     resp.append(gather)
 
@@ -51,7 +57,7 @@ def start(From: str = Form(...), SpeechResult: str = Form(...), CallSid: str = F
 
     if classify_result == "traducción":
         gather = Gather(input="speech", language="es-US",
-                        speech_timeout=5, action=TRANSLATE_ROUTE)
+                        finish_on_key="#", action=TRANSLATE_ROUTE)
 
         add_log(CallSid, "Searchy", ES_TRANSLATE)
 
@@ -117,8 +123,8 @@ def start(From: str = Form(...), SpeechResult: str = Form(...), CallSid: str = F
 
 if __name__ == "__main__":
     PORT = os.getenv("PORT", default=5000)
-    # from pyngrok import ngrok
-    # public_url = ngrok.connect(PORT, bind_tls=True).public_url
-    # number = twilio_client.incoming_phone_numbers.list()[0]
-    # number.update(voice_url=public_url + INITIAL_ROUTE)
+    from pyngrok import ngrok
+    public_url = ngrok.connect(PORT, bind_tls=True).public_url
+    number = twilio_client.incoming_phone_numbers.list()[1]
+    number.update(voice_url=public_url + INITIAL_ROUTE)
     uvicorn.run("main:app", host="0.0.0.0", port=PORT, log_level="info")

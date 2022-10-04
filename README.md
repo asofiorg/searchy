@@ -2,7 +2,7 @@
 
 # Searchy
 
-**_Like siri but in a phone call_**
+**_Como siri pero en una llamada_**
 
 </div>
 
@@ -38,7 +38,5 @@ git clone https://github.com/asofiorg/searchy.git
 
 cd searchy
 
-pip3 install -r requirements.txt
-
-python3 main.py
+sh start.sh
 ```

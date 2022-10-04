@@ -2,9 +2,9 @@ INITIAL_ROUTE = "/voice"
 START_ROUTE = "/start"
 TRANSLATE_ROUTE="/translate"
 
-ES_WELCOME = "Hola soy serchi, ¿que quieres que haga?"
+ES_WELCOME = "Hola soy serchi, dime que quieres hacer y luego presiona numeral"
 
-ES_NEXT_STEP_TRANSLATE="dime que quieres traducir"
+ES_NEXT_STEP_TRANSLATE="dime que quieres traducir y luego presiona numeral"
 
 ES_NOT_FOUND = "Lo siento, no hemos podido encontrar una respuesta a eso, intentalo de nuevo"
 

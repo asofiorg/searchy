@@ -1,4 +1,5 @@
 import wikipedia
+from re import sub
 
 wikipedia.set_lang("es")
 
@@ -6,4 +7,8 @@ wikipedia.set_lang("es")
 def search_wiki(text):
     suggestion = wikipedia.suggest(text)
 
-    return wikipedia.summary(text, sentences=1)
+    article = wikipedia.summary(text)
+
+    article = sub(r'\[.*?\]+', '', article)
+
+    return article[0:1000]
