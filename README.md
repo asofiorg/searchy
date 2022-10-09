@@ -17,6 +17,7 @@ TWILIO_ACCOUNT_SID=
 TWILIO_AUTH_TOKEN=
 DATABASE_KEY=
 NEWS_KEY=
+PASSWORD=
 ```
 
 ### Credenciales de Twilio
@@ -30,6 +31,10 @@ Ve al [siguiente link](https://web.deta.sh/), registrate, copia y pega la api ke
 ### Obten una key de Mediastack
 
 Ve al [siguiente link](https://mediastack.com/signup/free), registrate y pega la api key en el campo de `NEWS_KEY`
+
+### Contraseña
+
+En el campo `PASSWORD`, establece una contraseña segura para ejecutaar las newsletter
 
 ## Clona el repositorio e inicia el servicio
 
